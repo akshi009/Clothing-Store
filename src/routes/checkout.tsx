@@ -121,8 +121,8 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-24 md:pt-32 max-w-[1200px] mx-auto px-6 md:px-10 pb-24">
+
+      <main className="pt-6 max-w-[1200px] mx-auto px-6 md:px-10 pb-24">
         {/* Step indicator */}
         <div className="flex items-center gap-0 mb-10 max-w-xs">
           {(["Bag", "Details", "Confirm"] as const).map((step, i) => (

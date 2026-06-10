@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Star } from "lucide-react";
+import { FloatingHeroGallery } from "@/components/FloatingHeroGallery";
 import { useProducts, useCategories, type HomepageSection } from "@/lib/storefront";
 import { useFeaturedReviews } from "@/lib/orders";
 import { currency } from "@/lib/format";
@@ -24,13 +25,17 @@ export function HomepageBlock({ section }: { section: HomepageSection }) {
 
 function HeroBlock({ s }: { s: HomepageSection }) {
   const isVideo = !!s.video_url;
+  const galleryImages: string[] = Array.isArray(s.extra?.images) ? s.extra.images : [];
+  const hasGallery = galleryImages.length >= 2;
+
   return (
-    <section className="relative overflow-hidden bg-surface-dim/40">
-      <div className="max-w-[1440px] mx-auto px-6 md:px-10 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+    <section className="relative bg-surface-dim/60">
+      <div className="gold-divider" />
+      <div className="max-w-[1440px] mx-auto px-6 md:px-10 py-10 md:py-16 grid md:grid-cols-2 gap-10 items-center overflow-hidden">
         <div className="animate-fade-up">
           {s.subtitle && <p className="eyebrow mb-6">{s.subtitle}</p>}
           {s.title && <h1 className="font-serif text-5xl md:text-7xl leading-[1.05] tracking-tight">{s.title}</h1>}
-          {s.body && <p className="mt-8 text-ink-soft max-w-md leading-relaxed">{s.body}</p>}
+          {s.body && <p className="mt-8 text-ink-soft max-w-md leading-relaxed text-base">{s.body}</p>}
           {s.cta_label && (
             <div className="mt-10 flex flex-wrap gap-3">
               <Link to={(s.cta_url || "/collections") as any} className="btn-primary">
@@ -39,14 +44,24 @@ function HeroBlock({ s }: { s: HomepageSection }) {
             </div>
           )}
         </div>
-        <div className="relative aspect-[4/5] md:aspect-square bg-surface-dim rounded-sm overflow-hidden">
-          {isVideo ? (
-            <video src={s.video_url!} poster={s.image_url ?? undefined} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
-          ) : s.image_url ? (
-            <img src={s.image_url} alt={s.title ?? "Hero"} className="absolute inset-0 w-full h-full object-cover" />
-          ) : null}
-        </div>
+
+        {hasGallery ? (
+          /* Floating interactive gallery */
+          <div className="relative aspect-square bg-surface-dim/40 rounded-sm overflow-hidden hidden md:block">
+            <FloatingHeroGallery images={galleryImages} />
+          </div>
+        ) : (
+          /* Single image / video fallback */
+          <div className="relative aspect-[4/5] md:aspect-square bg-surface-dim rounded-sm overflow-hidden">
+            {isVideo ? (
+              <video src={s.video_url!} poster={s.image_url ?? undefined} autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" />
+            ) : s.image_url ? (
+              <img src={s.image_url} alt={s.title ?? "Hero"} className="absolute inset-0 w-full h-full object-cover" />
+            ) : null}
+          </div>
+        )}
       </div>
+      <div className="gold-divider" />
     </section>
   );
 }

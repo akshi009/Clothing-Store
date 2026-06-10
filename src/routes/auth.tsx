@@ -77,14 +77,14 @@ function AuthPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-28 md:pt-32 pb-20 min-h-screen flex items-center justify-center px-6">
+
+      <main className="pt-6 pb-20 min-h-screen flex items-center justify-center px-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
             <p className="eyebrow mb-3">Members</p>
             <h1 className="font-serif text-3xl md:text-4xl">{mode === "signup" ? "Join AESTHETE" : "Welcome Back"}</h1>
             <p className="text-sm text-ink-soft mt-3">
-              {mode === "signup" ? "Create an account to track orders and save favorites." : "Sign in to continue."}
+              {mode === "signup" ? "Join the tribe. Track orders, save your favourites, and get early access to new drops." : "Welcome back — the new festive edit is waiting for you."}
             </p>
           </div>
 

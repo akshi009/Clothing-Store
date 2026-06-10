@@ -12,6 +12,7 @@ export type StoreProduct = {
   price: number;
   stock: number;
   image_url: string | null;
+  images: string[];
   status: string;
   featured: boolean;
   created_at: string;
@@ -20,6 +21,7 @@ export type StoreProduct = {
 export type SiteSettings = {
   general: { store_name: string; tagline: string; currency: string; locale?: string; support_email: string };
   shipping: { free_shipping_threshold: number; standard_rate: number; express_rate: number };
+  ticker: { items: string[] };
 };
 
 export type HomepageSection = {
@@ -42,6 +44,7 @@ export type CmsPage = {
 const defaults: SiteSettings = {
   general: { store_name: "AESTHETE", tagline: "Quietly extraordinary.", currency: "INR", locale: "en-IN", support_email: "" },
   shipping: { free_shipping_threshold: 5000, standard_rate: 250, express_rate: 600 },
+  ticker: { items: ["Free shipping on orders above ₹5,000", "New Kutch mirror-work tops just dropped", "Use code FESTIVE10 for 10% off", "Same-day dispatch on in-stock pieces", "Handcrafted by Indian artisans"] },
 };
 
 export function useProducts(opts?: { featuredOnly?: boolean; limit?: number }) {
@@ -53,7 +56,7 @@ export function useProducts(opts?: { featuredOnly?: boolean; limit?: number }) {
       if (opts?.limit) q = q.limit(opts.limit);
       const { data, error } = await q;
       if (error) throw error;
-      return (data ?? []) as unknown as StoreProduct[];
+      return (data ?? []).map((p: any) => ({ ...p, images: Array.isArray(p.images) ? p.images : [] })) as StoreProduct[];
     },
   });
 }
@@ -65,7 +68,8 @@ export function useProductBySlug(slug: string | undefined) {
     queryFn: async () => {
       const { data, error } = await supabase.from("products").select("*").eq("slug", slug!).maybeSingle();
       if (error) throw error;
-      return (data ?? null) as StoreProduct | null;
+      if (!data) return null;
+      return { ...data, images: Array.isArray((data as any).images) ? (data as any).images : [] } as StoreProduct;
     },
   });
 }
@@ -80,6 +84,7 @@ export function useSiteSettings() {
       return {
         general: { ...defaults.general, ...(map.general ?? {}) },
         shipping: { ...defaults.shipping, ...(map.shipping ?? {}) },
+        ticker: { ...defaults.ticker, ...(map.ticker ?? {}) },
       };
     },
     staleTime: 60_000,

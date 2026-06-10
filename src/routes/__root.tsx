@@ -15,6 +15,8 @@ import { Toaster } from "sonner";
 import { CartProvider } from "@/lib/cart";
 import { CartDrawer } from "@/components/CartDrawer";
 import { WishlistProvider } from "@/lib/wishlist";
+import { AnnouncementBar } from "@/components/AnnouncementBar";
+import { Header } from "@/components/Header";
 
 function NotFoundComponent() {
   return (
@@ -81,21 +83,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AESTHETE — Quiet Luxury & Digital Craftsmanship" },
-      { name: "description", content: "AESTHETE is a luxury fashion atelier blending tailored craftsmanship with immersive digital experiences." },
+      { title: "AESTHETE — Festive Indian Luxury. Worn with Fire." },
+      { name: "description", content: "Hand-embroidered, mirror-worked, sequin-kissed. AESTHETE brings India's most festive craft traditions into wearable art." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "AESTHETE — Quiet Luxury & Digital Craftsmanship" },
-      { name: "twitter:title", content: "AESTHETE — Quiet Luxury & Digital Craftsmanship" },
-      { property: "og:description", content: "AESTHETE is a luxury fashion atelier blending tailored craftsmanship with immersive digital experiences." },
-      { name: "twitter:description", content: "AESTHETE is a luxury fashion atelier blending tailored craftsmanship with immersive digital experiences." },
+      { property: "og:title", content: "AESTHETE — Festive Indian Luxury. Worn with Fire." },
+      { name: "twitter:title", content: "AESTHETE — Festive Indian Luxury. Worn with Fire." },
+      { property: "og:description", content: "Hand-embroidered, mirror-worked, sequin-kissed. AESTHETE brings India's most festive craft traditions into wearable art." },
+      { name: "twitter:description", content: "Hand-embroidered, mirror-worked, sequin-kissed. AESTHETE brings India's most festive craft traditions into wearable art." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c3ce38c4-46fa-43c9-9759-f58e88bf2dae/id-preview-3e2d180f--f90bd7ba-a2fd-479f-875e-98daacab9e9a.lovable.app-1781117173103.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c3ce38c4-46fa-43c9-9759-f58e88bf2dae/id-preview-3e2d180f--f90bd7ba-a2fd-479f-875e-98daacab9e9a.lovable.app-1781117173103.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" },
       { rel: "stylesheet", href: appCss },
     ],
   }),
@@ -135,6 +137,11 @@ function RootComponent() {
       <CartProvider>
         <WishlistProvider>
           <ScrollToTop />
+          {/* Sticky shell: announcement bar + header scroll together as one unit */}
+          <div className="sticky top-0 z-50">
+            <AnnouncementBar />
+            <Header />
+          </div>
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
           <CartDrawer />

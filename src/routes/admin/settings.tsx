@@ -10,6 +10,7 @@ export const Route = createFileRoute("/admin/settings")({ component: Settings })
 
 type General = { store_name: string; currency: string; locale: string; support_email: string; tagline: string };
 type Shipping = { free_shipping_threshold: number; standard_rate: number; express_rate: number };
+type Ticker = { items: string[] };
 
 const CURRENCIES = [
   { code: "INR", locale: "en-IN", label: "Indian Rupee (₹)" },
@@ -33,11 +34,13 @@ function Settings() {
 
   const [general, setGeneral] = useState<General>({ store_name: "AESTHETE", currency: "INR", locale: "en-IN", support_email: "", tagline: "" });
   const [shipping, setShipping] = useState<Shipping>({ free_shipping_threshold: 5000, standard_rate: 250, express_rate: 600 });
+  const [ticker, setTicker] = useState<Ticker>({ items: [] });
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (data?.general) setGeneral((g) => ({ ...g, ...data.general }));
     if (data?.shipping) setShipping((s) => ({ ...s, ...data.shipping }));
+    if (data?.ticker) setTicker((t) => ({ ...t, ...data.ticker }));
   }, [data]);
 
   const save = async () => {
@@ -45,6 +48,7 @@ function Settings() {
     const { error } = await supabase.from("site_settings").upsert([
       { key: "general", value: general, updated_at: new Date().toISOString() },
       { key: "shipping", value: shipping, updated_at: new Date().toISOString() },
+      { key: "ticker", value: ticker, updated_at: new Date().toISOString() },
     ]);
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -92,6 +96,19 @@ function Settings() {
           <Field label="Standard Rate"><input type="number" min="0" value={shipping.standard_rate} onChange={(e) => setShipping({ ...shipping, standard_rate: +e.target.value })} className={inp} /></Field>
           <Field label="Express Rate"><input type="number" min="0" value={shipping.express_rate} onChange={(e) => setShipping({ ...shipping, express_rate: +e.target.value })} className={inp} /></Field>
         </div>
+      </section>
+
+      <section className="border border-hairline bg-card p-6 md:p-8 mb-6">
+        <h2 className="font-serif text-xl mb-2">Ticker Strip</h2>
+        <p className="text-xs text-ink-soft mb-5">One item per line. Shown in the scrolling announcement bar at the top of the site.</p>
+        <textarea
+          rows={6}
+          className="w-full border border-hairline bg-transparent px-4 py-3 text-sm focus:border-primary outline-none resize-y"
+          placeholder={"Free shipping on orders above ₹5,000\nNew arrivals just dropped\nUse FESTIVE10 for 10% off"}
+          value={ticker.items.join("\n")}
+          onChange={(e) => setTicker({ items: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) })}
+        />
+        <p className="text-xs text-ink-soft mt-2">{ticker.items.length} item{ticker.items.length !== 1 ? "s" : ""} in ticker</p>
       </section>
 
       <button onClick={save} disabled={busy} className="btn-primary">

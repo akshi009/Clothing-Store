@@ -5,10 +5,11 @@ export function Footer() {
   const { data: settings } = useSiteSettings();
   const { data: nav = [] } = useNavItems("footer");
   const storeName = settings?.general.store_name ?? "AESTHETE";
-  const tagline = settings?.general.tagline ?? "High-end luxury fashion prioritizing quiet luxury and digital craftsmanship.";
+  const tagline = settings?.general.tagline ?? "Hand-embroidered. Mirror-worked. Made for women who celebrate loudly.";
   const supportEmail = settings?.general.support_email;
   return (
-    <footer className="border-t border-hairline bg-surface-dim/40">
+    <footer className="bg-surface-dim/40">
+      <div className="gold-divider" />
       <div className="max-w-[1440px] mx-auto px-6 md:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div>
           <p className="font-serif text-xl tracking-[0.18em] font-bold mb-4 uppercase">{storeName}</p>

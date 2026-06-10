@@ -61,13 +61,13 @@ function Collections() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-24 md:pt-32 max-w-[1440px] mx-auto px-6 md:px-10 pb-20">
+
+      <main className="pt-6 max-w-[1440px] mx-auto px-6 md:px-10 pb-20">
         <p className="text-xs tracking-[0.2em] uppercase text-ink-soft mb-4">
           <Link to="/" className="hover:opacity-60">Home</Link> / Collections
         </p>
         <div className="flex flex-wrap items-end justify-between gap-6 mb-10 md:mb-16">
-          <h1 className="font-serif text-5xl md:text-6xl">The Curated Edit</h1>
+          <h1 className="font-serif text-5xl md:text-6xl">The Festive Edit</h1>
           <div className="flex items-center gap-4 md:gap-6 text-sm">
             <span className="text-[11px] tracking-[0.2em] uppercase text-ink-soft">{filtered.length} Items</span>
             {/* Mobile filter toggle */}

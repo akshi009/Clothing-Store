@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, ChevronDown, Star } from "lucide-react";
+import { Heart, ChevronDown, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useProductBySlug, useProducts } from "@/lib/storefront";
@@ -30,21 +30,22 @@ function ProductPage() {
   const { add } = useCart();
   const { toggle: wishlistToggle, has: inWishlist } = useWishlist();
   const [size, setSize] = useState<string>("M");
+  const [activeImg, setActiveImg] = useState(0);
   const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <Header />
-        <div className="pt-32 text-center text-ink-soft">Loading…</div>
+  
+        <div className="pt-6 text-center text-ink-soft">Loading…</div>
       </div>
     );
   }
   if (!product) {
     return (
       <div className="min-h-screen bg-background text-foreground">
-        <Header />
-        <div className="pt-32 text-center">
+  
+        <div className="pt-6 text-center">
           <p className="text-ink-soft mb-4">Product not found.</p>
           <Link to="/collections" className="btn-primary inline-flex">Browse Collections</Link>
         </div>
@@ -69,8 +70,8 @@ function ProductPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-24 md:pt-28 pb-20">
+
+      <main className="pt-6 pb-20">
         <div className="max-w-[1440px] mx-auto px-6 md:px-10">
           <p className="text-xs tracking-[0.2em] uppercase text-ink-soft mb-8">
             <Link to="/" className="hover:opacity-60">Home</Link> /{" "}
@@ -79,10 +80,68 @@ function ProductPage() {
           </p>
 
           <div className="grid lg:grid-cols-2 gap-10 md:gap-16">
-            <div className="aspect-[4/5] overflow-hidden bg-surface-dim rounded-sm">
-              {product.image_url ? (
-                <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" width={768} height={1024} />
-              ) : <div className="w-full h-full" />}
+            {/* Image gallery */}
+            <div>
+              {(() => {
+                const allImgs = [
+                  ...(product.image_url ? [product.image_url] : []),
+                  ...product.images.filter((u) => u !== product.image_url),
+                ];
+                return (
+                  <>
+                    {/* Main image */}
+                    <div className="relative aspect-[4/5] overflow-hidden bg-surface-dim rounded-sm">
+                      {allImgs.length > 0 ? (
+                        <img
+                          key={activeImg}
+                          src={allImgs[activeImg]}
+                          alt={product.name}
+                          className="w-full h-full object-cover transition-opacity duration-300"
+                          width={768}
+                          height={1024}
+                        />
+                      ) : <div className="w-full h-full" />}
+                      {/* Prev / Next arrows */}
+                      {allImgs.length > 1 && (
+                        <>
+                          <button
+                            onClick={() => setActiveImg((p) => (p - 1 + allImgs.length) % allImgs.length)}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-background/80 flex items-center justify-center hover:bg-background transition"
+                          ><ChevronLeft className="w-4 h-4" /></button>
+                          <button
+                            onClick={() => setActiveImg((p) => (p + 1) % allImgs.length)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-background/80 flex items-center justify-center hover:bg-background transition"
+                          ><ChevronRight className="w-4 h-4" /></button>
+                          {/* Dot indicator */}
+                          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                            {allImgs.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => setActiveImg(i)}
+                                className={`w-1.5 h-1.5 rounded-full transition-all ${i === activeImg ? "bg-primary w-4" : "bg-white/60"}`}
+                              />
+                            ))}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {/* Thumbnails */}
+                    {allImgs.length > 1 && (
+                      <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+                        {allImgs.map((src, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setActiveImg(i)}
+                            className={`shrink-0 w-16 h-20 overflow-hidden border-2 transition ${i === activeImg ? "border-primary" : "border-transparent hover:border-hairline"}`}
+                          >
+                            <img src={src} alt="" className="w-full h-full object-cover" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             <div className="lg:sticky lg:top-28 self-start">

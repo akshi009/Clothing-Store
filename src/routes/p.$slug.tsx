@@ -25,8 +25,8 @@ function PageView() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-24 md:pt-32 max-w-3xl mx-auto px-6 md:px-10 pb-24">
+
+      <main className="pt-6 max-w-3xl mx-auto px-6 md:px-10 pb-24">
         <h1 className="font-serif text-4xl md:text-5xl mb-8">{data.title}</h1>
         <article
           className="prose prose-neutral max-w-none [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-ink-soft [&_p]:leading-relaxed [&_p]:mb-4 [&_a]:underline [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:mb-1"

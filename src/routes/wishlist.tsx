@@ -29,8 +29,8 @@ function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="pt-28 md:pt-32 pb-20">
+
+      <main className="pt-6 pb-20">
         <div className="max-w-[1440px] mx-auto px-6 md:px-10">
           <p className="eyebrow mb-3">Saved</p>
           <h1 className="font-serif text-4xl md:text-5xl mb-12">Your Wishlist</h1>

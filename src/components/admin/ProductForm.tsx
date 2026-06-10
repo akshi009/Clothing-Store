@@ -3,6 +3,8 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, X } from "lucide-react";
+import { MediaPicker } from "@/components/admin/MediaPicker";
+import { MultiMediaPicker } from "@/components/admin/MultiMediaPicker";
 
 const schema = z.object({
   name: z.string().min(2).max(200),
@@ -21,12 +23,13 @@ export type ProductRow = {
   name: string; slug: string; category: string;
   price: number | string; stock: number;
   description?: string | null; image_url?: string | null;
+  images?: string[];
   status: string; featured: boolean;
 };
 
 const empty: ProductRow = {
   name: "", slug: "", category: "Essentials", price: 0, stock: 0,
-  description: "", image_url: "", status: "active", featured: false,
+  description: "", image_url: "", images: [], status: "active", featured: false,
 };
 
 export function ProductForm({ product, onClose, onSaved }: { product: ProductRow | null; onClose: () => void; onSaved: () => void }) {
@@ -44,10 +47,12 @@ export function ProductForm({ product, onClose, onSaved }: { product: ProductRow
     const parsed = schema.safeParse({ ...form, price: Number(form.price), stock: Number(form.stock) });
     if (!parsed.success) { toast.error(parsed.error.issues[0]?.message ?? "Invalid input"); return; }
     setBusy(true);
-    const payload = { ...parsed.data, description: parsed.data.description || null, image_url: parsed.data.image_url || null };
+    // `images` column may not exist yet — only include it if there are values to avoid 400 on fresh DBs
+    const payload: Record<string, any> = { ...parsed.data, description: parsed.data.description || null, image_url: parsed.data.image_url || null };
+    if ((form.images ?? []).length > 0) payload.images = form.images;
     const { error } = form.id
-      ? await supabase.from("products").update(payload).eq("id", form.id)
-      : await supabase.from("products").insert(payload);
+      ? await supabase.from("products").update(payload as any).eq("id", form.id)
+      : await supabase.from("products").insert(payload as any);
     setBusy(false);
     if (error) { toast.error(error.message); return; }
     toast.success(form.id ? "Product updated." : "Product created.");
@@ -83,7 +88,16 @@ export function ProductForm({ product, onClose, onSaved }: { product: ProductRow
               Show on homepage
             </label>
           </Field>
-          <Field label="Image URL" className="col-span-2"><input value={form.image_url ?? ""} onChange={(e) => set("image_url", e.target.value)} className={inp} placeholder="https://…" /></Field>
+          <div className="col-span-2">
+            <MediaPicker label="Cover Image" value={form.image_url} onChange={(v) => set("image_url", v || null)} />
+          </div>
+          <div className="col-span-2">
+            <MultiMediaPicker
+              label="Gallery Images (shown in product page carousel)"
+              values={form.images ?? []}
+              onChange={(imgs) => set("images", imgs)}
+            />
+          </div>
           <Field label="Description" className="col-span-2">
             <textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} rows={4} className={`${inp} h-auto py-3`} />
           </Field>

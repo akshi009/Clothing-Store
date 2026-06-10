@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { MultiMediaPicker } from "@/components/admin/MultiMediaPicker";
 import { BLOCK_TYPES, blockTypeMap, type BlockField } from "@/lib/block-types";
 import {
   Loader2, Eye, EyeOff, Save, Trash2, Plus, GripVertical, ChevronDown, ChevronUp, X,
@@ -215,8 +216,16 @@ function SectionEditor({ section, onSaved }: { section: Section; onSaved: () => 
         {has("cta_label") && <Field label="CTA Label"><input className={inp} value={s.cta_label ?? ""} onChange={(e) => setS({ ...s, cta_label: e.target.value })} /></Field>}
         {has("cta_url") && <Field label="CTA URL"><input className={inp} placeholder="/collections" value={s.cta_url ?? ""} onChange={(e) => setS({ ...s, cta_url: e.target.value })} /></Field>}
         {has("image") && (
-          <div className="md:col-span-2">
-            <MediaPicker label="Image" value={s.image_url} onChange={(v) => setS({ ...s, image_url: v || null })} />
+          <div className="md:col-span-2 space-y-6">
+            <MediaPicker label="Primary Image" value={s.image_url} onChange={(v) => setS({ ...s, image_url: v || null })} />
+            {section.type === "hero" && (
+              <MultiMediaPicker
+                label="Floating Gallery Images (Hero) — add 3–6 images for an interactive floating layout"
+                values={Array.isArray(s.extra?.images) ? s.extra.images : []}
+                onChange={(imgs) => setS({ ...s, extra: { ...s.extra, images: imgs } })}
+                max={6}
+              />
+            )}
           </div>
         )}
         {has("video") && (

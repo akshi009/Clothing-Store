@@ -37,7 +37,7 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 glass border-b border-hairline">
+      <header className="sticky top-0 left-0 right-0 z-50 glass border-b border-hairline">
         <div className="max-w-[1440px] mx-auto px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
           <Link to="/" onClick={() => setMobileOpen(false)} className="font-serif text-2xl md:text-3xl tracking-[0.18em] font-bold uppercase">{storeName}</Link>
 
@@ -108,7 +108,7 @@ export function Header() {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <nav className="absolute top-16 left-0 right-0 bg-background border-b border-hairline flex flex-col divide-y divide-hairline">
+          <nav className="absolute top-full left-0 right-0 bg-background border-b border-hairline flex flex-col divide-y divide-hairline">
             {navItems.map((item) => (
               <a key={item.id} href={item.url} onClick={() => setMobileOpen(false)} className="px-6 py-4 text-sm tracking-wide hover:bg-surface-dim">
                 {item.label}
