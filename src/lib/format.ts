@@ -4,21 +4,13 @@ let CURRENT_LOCALE = "en-IN";
 
 const LOCALE_BY_CODE: Record<string, string> = {
   INR: "en-IN",
-  USD: "en-US",
-  EUR: "en-IE",
-  GBP: "en-GB",
-  AED: "en-AE",
-  SGD: "en-SG",
-  AUD: "en-AU",
-  CAD: "en-CA",
-  JPY: "ja-JP",
 };
 
 export function setCurrencyFormat(code?: string | null, locale?: string | null) {
   if (code) CURRENT_CODE = code.toUpperCase();
-  CURRENT_LOCALE = locale || LOCALE_BY_CODE[CURRENT_CODE] || "en-US";
+  CURRENT_LOCALE = locale || LOCALE_BY_CODE[CURRENT_CODE] || "en-IN";
   if (typeof window !== "undefined") {
-    try { localStorage.setItem("cms-currency", JSON.stringify({ code: CURRENT_CODE, locale: CURRENT_LOCALE })); } catch {}
+    try { localStorage.setItem("cms-currency", JSON.stringify({ code: CURRENT_CODE, locale: CURRENT_LOCALE })); } catch { }
   }
 }
 
@@ -31,7 +23,7 @@ if (typeof window !== "undefined") {
       if (v?.code) CURRENT_CODE = v.code;
       if (v?.locale) CURRENT_LOCALE = v.locale;
     }
-  } catch {}
+  } catch { }
 }
 
 export const getCurrencyCode = () => CURRENT_CODE;

@@ -22,6 +22,8 @@ export type SiteSettings = {
   general: { store_name: string; tagline: string; currency: string; locale?: string; support_email: string };
   shipping: { free_shipping_threshold: number; standard_rate: number; express_rate: number };
   ticker: { items: string[] };
+  social: { instagram?: string; youtube?: string; facebook?: string; twitter?: string };
+  visit: { locations: string[] };
 };
 
 export type HomepageSection = {
@@ -45,6 +47,8 @@ const defaults: SiteSettings = {
   general: { store_name: "AESTHETE", tagline: "Quietly extraordinary.", currency: "INR", locale: "en-IN", support_email: "" },
   shipping: { free_shipping_threshold: 5000, standard_rate: 250, express_rate: 600 },
   ticker: { items: ["Free shipping on orders above ₹5,000", "New Kutch mirror-work tops just dropped", "Use code FESTIVE10 for 10% off", "Same-day dispatch on in-stock pieces", "Handcrafted by Indian artisans"] },
+  social: {},
+  visit: { locations: ["Mumbai — Bandra Kurla", "Delhi — Lodhi Colony", "Bengaluru — Indiranagar"] },
 };
 
 export function useProducts(opts?: { featuredOnly?: boolean; limit?: number }) {
@@ -85,6 +89,8 @@ export function useSiteSettings() {
         general: { ...defaults.general, ...(map.general ?? {}) },
         shipping: { ...defaults.shipping, ...(map.shipping ?? {}) },
         ticker: { ...defaults.ticker, ...(map.ticker ?? {}) },
+        social: { ...defaults.social, ...(map.social ?? {}) },
+        visit: { locations: map.visit?.locations ?? defaults.visit.locations },
       };
     },
     staleTime: 60_000,

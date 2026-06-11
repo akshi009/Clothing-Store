@@ -17,6 +17,7 @@ import { CartDrawer } from "@/components/CartDrawer";
 import { WishlistProvider } from "@/lib/wishlist";
 import { AnnouncementBar } from "@/components/AnnouncementBar";
 import { Header } from "@/components/Header";
+import { useRouterState } from "@tanstack/react-router";
 
 function NotFoundComponent() {
   return (
@@ -132,16 +133,21 @@ function ScrollToTop() {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { location } = useRouterState();
+  const isAdmin = location.pathname.startsWith("/admin");
+
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
         <WishlistProvider>
           <ScrollToTop />
-          {/* Sticky shell: announcement bar + header scroll together as one unit */}
-          <div className="sticky top-0 z-50">
-            <AnnouncementBar />
-            <Header />
-          </div>
+          {/* Sticky shell: announcement bar + header — hidden on admin routes */}
+          {!isAdmin && (
+            <div className="sticky top-0 z-50">
+              <AnnouncementBar />
+              <Header />
+            </div>
+          )}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
           <CartDrawer />

@@ -92,7 +92,7 @@ function AdminLayout() {
   return (
     <div className="min-h-screen bg-background text-foreground flex">
       <AdminSidebar />
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pt-14 lg:pt-0">
         <Outlet />
       </div>
     </div>

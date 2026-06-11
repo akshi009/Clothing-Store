@@ -244,6 +244,11 @@ function SectionEditor({ section, onSaved }: { section: Section; onSaved: () => 
             <TestimonialsEditor value={s.extra?.items ?? []} onChange={(items) => setS({ ...s, extra: { ...s.extra, items } })} />
           </div>
         )}
+        {def.extraEditor === "reels" && (
+          <div className="md:col-span-2">
+            <ReelsEditor value={s.extra?.reels ?? []} onChange={(reels) => setS({ ...s, extra: { ...s.extra, reels } })} />
+          </div>
+        )}
       </div>
       <div className="mt-6 flex justify-end">
         <button onClick={save} disabled={busy} className="btn-primary">
@@ -309,4 +314,43 @@ function AddBlockModal({ onClose, onPick }: { onClose: () => void; onPick: (type
 
 function Field({ label, children, className = "" }: any) {
   return <div className={className}><label className="eyebrow block mb-2">{label}</label>{children}</div>;
+}
+
+function ReelsEditor({ value, onChange }: {
+  value: Array<{ url: string }>;
+  onChange: (v: any[]) => void;
+}) {
+  const inp = "w-full h-10 border border-hairline bg-transparent px-3 text-sm focus:border-primary outline-none";
+  const update = (i: number, v: string) =>
+    onChange(value.map((it, idx) => idx === i ? { url: v } : it));
+  const add = () => onChange([...value, { url: "" }]);
+  const remove = (i: number) => onChange(value.filter((_, idx) => idx !== i));
+
+  return (
+    <div>
+      <label className="eyebrow block mb-3">Instagram Reels</label>
+      <p className="text-xs text-ink-soft mb-4">
+        Paste an <strong>Instagram reel link</strong> — e.g. <span className="font-mono text-[10px]">https://www.instagram.com/reel/ABC123/</span><br />
+        Or upload a <strong>downloaded .mp4</strong> to Supabase Storage and paste the public URL — this gives true autoplay + mute with no restrictions.
+      </p>
+      <div className="space-y-3">
+        {value.map((r, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <input
+              className={`${inp} flex-1`}
+              placeholder="https://www.instagram.com/reel/…"
+              value={r.url}
+              onChange={(e) => update(i, e.target.value)}
+            />
+            <button onClick={() => remove(i)} className="shrink-0 text-destructive hover:opacity-70">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ))}
+        <button onClick={add} className="text-sm flex items-center gap-2 px-3 h-10 border border-dashed border-hairline hover:bg-surface-dim">
+          <Plus className="w-4 h-4" /> Add reel
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -104,37 +104,38 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile nav drawer */}
+      {/* Mobile nav drawer — backdrop */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <nav className="absolute top-full left-0 right-0 bg-background border-b border-hairline flex flex-col divide-y divide-hairline">
-            {navItems.map((item) => (
-              <a key={item.id} href={item.url} onClick={() => setMobileOpen(false)} className="px-6 py-4 text-sm tracking-wide hover:bg-surface-dim">
-                {item.label}
-              </a>
-            ))}
-            {isAdmin && (
-              <Link to="/admin" onClick={() => setMobileOpen(false)} className="px-6 py-4 text-sm tracking-wide hover:bg-surface-dim">Atelier Console</Link>
-            )}
-            <div className="px-6 py-4">
-              {user ? (
-                <div className="space-y-3 text-sm">
-                  <p className="text-xs text-ink-soft">{user.email}</p>
-                  <Link to="/account" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 hover:opacity-60">
-                    <Package className="w-4 h-4" /> My Orders
-                  </Link>
-                  <button onClick={() => { signOut(); setMobileOpen(false); }} className="flex items-center gap-2 hover:opacity-60">
-                    <LogOut className="w-4 h-4" /> Sign Out
-                  </button>
-                </div>
-              ) : (
-                <Link to="/auth" search={{ mode: "signin", redirect: "/" }} onClick={() => setMobileOpen(false)} className="btn-primary inline-flex">Sign In</Link>
-              )}
-            </div>
-          </nav>
-        </div>
+        <div className="fixed inset-0 z-40 md:hidden bg-black/40" onClick={() => setMobileOpen(false)} />
       )}
+      {/* Drawer slides down directly below the sticky header */}
+      <nav className={`md:hidden fixed left-0 right-0 z-40 bg-background border-b border-hairline flex flex-col divide-y divide-hairline transition-transform duration-300 ${mobileOpen ? "translate-y-0" : "-translate-y-full pointer-events-none"}`}
+        style={{ top: "100px" }}
+      >
+        {navItems.map((item) => (
+          <a key={item.id} href={item.url} onClick={() => setMobileOpen(false)} className="px-6 py-4 text-sm tracking-wide hover:bg-surface-dim">
+            {item.label}
+          </a>
+        ))}
+        {isAdmin && (
+          <Link to="/admin" onClick={() => setMobileOpen(false)} className="px-6 py-4 text-sm tracking-wide hover:bg-surface-dim">Atelier Console</Link>
+        )}
+        <div className="px-6 py-4">
+          {user ? (
+            <div className="space-y-3 text-sm">
+              <p className="text-xs text-ink-soft">{user.email}</p>
+              <Link to="/account" onClick={() => setMobileOpen(false)} className="flex items-center gap-2 hover:opacity-60">
+                <Package className="w-4 h-4" /> My Orders
+              </Link>
+              <button onClick={() => { signOut(); setMobileOpen(false); }} className="flex items-center gap-2 hover:opacity-60">
+                <LogOut className="w-4 h-4" /> Sign Out
+              </button>
+            </div>
+          ) : (
+            <Link to="/auth" search={{ mode: "signin", redirect: "/" }} onClick={() => setMobileOpen(false)} className="btn-primary inline-flex">Sign In</Link>
+          )}
+        </div>
+      </nav>
     </>
   );
 }

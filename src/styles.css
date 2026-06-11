@@ -229,3 +229,7 @@
   100%{ transform: scale(1); }
 }
 .animate-count-pop { animation: count-pop 0.35s ease-out; }
+
+/* ── Scrollbar hide (reel strip) ── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

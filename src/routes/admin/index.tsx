@@ -5,7 +5,7 @@ import { currency, dateTime } from "@/lib/format";
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from "recharts";
-import { DollarSign, ShoppingCart, Users, Package, ArrowUpRight } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, Package, ArrowUpRight, IndianRupee } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   component: Dashboard,
@@ -49,7 +49,7 @@ function Dashboard() {
   });
 
   const stats = [
-    { label: "Total Revenue", value: currency(revenue), icon: DollarSign, hint: `${orders.length} orders` },
+    { label: "Total Revenue", value: currency(revenue), icon: IndianRupee, hint: `${orders.length} orders` },
     { label: "Pending Orders", value: pending, icon: ShoppingCart, hint: "Awaiting fulfillment" },
     { label: "Customers", value: data?.customerCount ?? 0, icon: Users, hint: "Total signups" },
     { label: "Products", value: data?.productCount ?? 0, icon: Package, hint: `${data?.lowStock ?? 0} low stock` },

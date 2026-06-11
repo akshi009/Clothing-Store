@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Star } from "lucide-react";
 import { FloatingHeroGallery } from "@/components/FloatingHeroGallery";
+import { ReelCard, type ReelItem } from "@/components/ReelCard";
 import { useProducts, useCategories, type HomepageSection } from "@/lib/storefront";
 import { useFeaturedReviews } from "@/lib/orders";
 import { currency } from "@/lib/format";
@@ -19,6 +20,7 @@ export function HomepageBlock({ section }: { section: HomepageSection }) {
     case "newsletter": return <NewsletterBlock s={section} />;
     case "image_banner": return <ImageBannerBlock s={section} />;
     case "custom_html": return <CustomHtmlBlock s={section} />;
+    case "reel_reviews": return <ReelReviewsBlock s={section} />;
     default: return null;
   }
 }
@@ -243,6 +245,26 @@ function ImageBannerBlock({ s }: { s: HomepageSection }) {
             </Link>
           )}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function ReelReviewsBlock({ s }: { s: HomepageSection }) {
+  const reels: ReelItem[] = Array.isArray(s.extra?.reels) ? s.extra.reels : [];
+  if (reels.length === 0) return null;
+
+  return (
+    <section className="pb-10 md:pb-24 overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-10 mb-8">
+        {s.subtitle && <p className="eyebrow mb-3">{s.subtitle}</p>}
+        {s.title && <h2 className="font-serif text-4xl md:text-5xl">{s.title}</h2>}
+      </div>
+      {/* Horizontal scroll strip */}
+      <div className="flex gap-5 overflow-x-auto px-6 md:px-10 pb-4 snap-x snap-mandatory scrollbar-hide">
+        {reels.map((reel, i) => (
+          <ReelCard key={i} reel={reel} />
+        ))}
       </div>
     </section>
   );

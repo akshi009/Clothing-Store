@@ -55,12 +55,12 @@ function DefaultStorefront() {
       <section className="relative overflow-hidden bg-surface-dim/60">
         {/* Floating sparkles */}
         {[
-          { top: "12%", left: "8%",  delay: "0s",    size: "text-lg" },
-          { top: "70%", left: "5%",  delay: "0.8s",  size: "text-sm" },
-          { top: "30%", left: "52%", delay: "1.4s",  size: "text-xs" },
-          { top: "80%", left: "60%", delay: "0.3s",  size: "text-base" },
-          { top: "18%", left: "78%", delay: "1.8s",  size: "text-sm" },
-          { top: "55%", left: "90%", delay: "0.6s",  size: "text-lg" },
+          { top: "12%", left: "8%", delay: "0s", size: "text-lg" },
+          { top: "70%", left: "5%", delay: "0.8s", size: "text-sm" },
+          { top: "30%", left: "52%", delay: "1.4s", size: "text-xs" },
+          { top: "80%", left: "60%", delay: "0.3s", size: "text-base" },
+          { top: "18%", left: "78%", delay: "1.8s", size: "text-sm" },
+          { top: "55%", left: "90%", delay: "0.6s", size: "text-lg" },
         ].map((s, i) => (
           <span
             key={i}
@@ -146,27 +146,27 @@ function DefaultStorefront() {
       {products.length > 0 && (
         <section className="bg-surface-dim/30">
           <div className="max-w-[1440px] mx-auto px-6 md:px-10 py-20 md:py-28">
-          <div className="mb-10 flex items-end justify-between">
-            <div>
-              <p className="eyebrow mb-3">✦ Most Loved</p>
-              <h2 className="font-serif text-4xl md:text-5xl">Statement Pieces</h2>
-            </div>
-            <Link to="/collections" className="btn-ghost hidden md:inline-flex">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {products.map((p) => (
-              <Link key={p.id} to="/product/$id" params={{ id: p.slug }} className="group">
-                <div className="aspect-[3/4] overflow-hidden bg-surface-dim rounded-sm border border-hairline/50">
-                  {p.image_url && <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />}
-                </div>
-                <p className="mt-4 text-[10px] tracking-[0.2em] uppercase" style={{ color: 'oklch(0.76 0.1 78)' }}>{p.category}</p>
-                <p className="text-sm font-medium mt-1">{p.name}</p>
-                <p className="text-sm text-ink-soft mt-0.5">{currency(p.price)}</p>
+            <div className="mb-1 flex items-end justify-between">
+              <div>
+                <p className="eyebrow mb-3">✦ Most Loved</p>
+                <h2 className="font-serif text-4xl md:text-5xl">Statement Pieces</h2>
+              </div>
+              <Link to="/collections" className="btn-ghost hidden md:inline-flex">
+                View All <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
-          </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {products.map((p) => (
+                <Link key={p.id} to="/product/$id" params={{ id: p.slug }} className="group">
+                  <div className="aspect-[3/4] overflow-hidden bg-surface-dim rounded-sm border border-hairline/50">
+                    {p.image_url && <img src={p.image_url} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-700" loading="lazy" />}
+                  </div>
+                  <p className="mt-4 text-[10px] tracking-[0.2em] uppercase" style={{ color: 'oklch(0.76 0.1 78)' }}>{p.category}</p>
+                  <p className="text-sm font-medium mt-1">{p.name}</p>
+                  <p className="text-sm text-ink-soft mt-0.5">{currency(p.price)}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}

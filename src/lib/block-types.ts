@@ -8,7 +8,7 @@ export type BlockTypeDef = {
   fields: BlockField[];
   defaults?: { title?: string; subtitle?: string; body?: string; cta_label?: string; cta_url?: string };
   // extra JSON config – for things like testimonials items, product limit
-  extraEditor?: "testimonials" | "product_limit" | "html";
+  extraEditor?: "testimonials" | "product_limit" | "html" | "reels";
 };
 
 export const BLOCK_TYPES: BlockTypeDef[] = [
@@ -90,6 +90,14 @@ export const BLOCK_TYPES: BlockTypeDef[] = [
     description: "Free-form HTML content block.",
     fields: ["title", "body"],
     extraEditor: "html",
+  },
+  {
+    type: "reel_reviews",
+    label: "Reel Reviews",
+    description: "Horizontal scroll of customer / influencer reels with autoplay + sound toggle.",
+    fields: ["subtitle", "title"],
+    defaults: { title: "As seen on reels", subtitle: "Reel Reviews" },
+    extraEditor: "reels",
   },
 ];
 

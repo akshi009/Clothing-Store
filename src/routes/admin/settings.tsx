@@ -35,12 +35,16 @@ function Settings() {
   const [general, setGeneral] = useState<General>({ store_name: "AESTHETE", currency: "INR", locale: "en-IN", support_email: "", tagline: "" });
   const [shipping, setShipping] = useState<Shipping>({ free_shipping_threshold: 5000, standard_rate: 250, express_rate: 600 });
   const [ticker, setTicker] = useState<Ticker>({ items: [] });
+  const [tickerRaw, setTickerRaw] = useState<string>("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     if (data?.general) setGeneral((g) => ({ ...g, ...data.general }));
     if (data?.shipping) setShipping((s) => ({ ...s, ...data.shipping }));
-    if (data?.ticker) setTicker((t) => ({ ...t, ...data.ticker }));
+    if (data?.ticker) {
+      setTicker((t) => ({ ...t, ...data.ticker }));
+      setTickerRaw((data.ticker.items ?? []).join("\n"));
+    }
   }, [data]);
 
   const save = async () => {
@@ -48,7 +52,7 @@ function Settings() {
     const { error } = await supabase.from("site_settings").upsert([
       { key: "general", value: general, updated_at: new Date().toISOString() },
       { key: "shipping", value: shipping, updated_at: new Date().toISOString() },
-      { key: "ticker", value: ticker, updated_at: new Date().toISOString() },
+      { key: "ticker", value: { items: tickerRaw.split("\n").map((s) => s.trim()).filter(Boolean) }, updated_at: new Date().toISOString() },
     ]);
     setBusy(false);
     if (error) return toast.error(error.message);
@@ -105,8 +109,8 @@ function Settings() {
           rows={6}
           className="w-full border border-hairline bg-transparent px-4 py-3 text-sm focus:border-primary outline-none resize-y"
           placeholder={"Free shipping on orders above ₹5,000\nNew arrivals just dropped\nUse FESTIVE10 for 10% off"}
-          value={ticker.items.join("\n")}
-          onChange={(e) => setTicker({ items: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) })}
+          value={tickerRaw}
+          onChange={(e) => setTickerRaw(e.target.value)}
         />
         <p className="text-xs text-ink-soft mt-2">{ticker.items.length} item{ticker.items.length !== 1 ? "s" : ""} in ticker</p>
       </section>
