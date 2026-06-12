@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ChevronDown, Heart, SlidersHorizontal, X } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -9,6 +9,9 @@ import { currency } from "@/lib/format";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/collections")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    filter: (search.filter as string) || (search.category as string) || "",
+  }),
   head: () => ({
     meta: [
       { title: "Collections — The Curated Edit | AESTHETE" },
@@ -20,13 +23,26 @@ export const Route = createFileRoute("/collections")({
 });
 
 function Collections() {
+  const { filter: filterParam } = Route.useSearch();
+  const navigate = useNavigate({ from: "/collections" });
   const { data: products = [], isLoading } = useProducts();
   const { toggle: wishlistToggle, has: inWishlist } = useWishlist();
-  const [category, setCategory] = useState<string>("All");
+  // Derive active category from URL param; fall back to "All"
   const [sort, setSort] = useState<"featured" | "price-asc" | "price-desc" | "newest">("featured");
-  const [filterOpen, setFilterOpen] = useState(false);
 
   const categories = useMemo(() => ["All", ...Array.from(new Set(products.map((p) => p.category)))], [products]);
+
+  // Match param case-insensitively against actual category names
+  const category = useMemo(() => {
+    if (!filterParam) return "All";
+    const match = categories.find((c) => c.toLowerCase() === filterParam.toLowerCase());
+    return match ?? "All";
+  }, [filterParam, categories]);
+
+  const setCategory = (c: string) => {
+    navigate({ search: c === "All" ? { filter: "" } : { filter: c.toLowerCase() } });
+  };
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const filtered = useMemo(() => {
     let list = category === "All" ? products : products.filter((p) => p.category === category);
@@ -56,6 +72,7 @@ function Collections() {
         </ul>
       </div>
       <button onClick={() => { setCategory("All"); setSort("featured"); setFilterOpen(false); }} className="w-full py-3 border border-hairline text-[11px] tracking-[0.2em] uppercase hover:bg-primary hover:text-primary-foreground transition">Clear All</button>
+
     </div>
   );
 
@@ -123,6 +140,7 @@ function Collections() {
               <div className="py-20 text-center border border-hairline">
                 <p className="text-ink-soft mb-4">No products match your filters.</p>
                 <button onClick={() => { setCategory("All"); setSort("featured"); }} className="btn-ghost inline-flex">Clear Filters</button>
+
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-6">

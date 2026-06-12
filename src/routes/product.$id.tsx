@@ -185,17 +185,22 @@ function ProductPage() {
                 </button>
               </div>
 
-              <div className="mt-10 divide-y divide-hairline border-y border-hairline">
-                {["Composition & Care", "Shipping & Returns"].map((t) => (
-                  <details key={t} className="group">
-                    <summary className="flex justify-between items-center py-5 cursor-pointer text-sm tracking-wide uppercase">
-                      {t}
-                      <ChevronDown className="w-4 h-4 group-open:rotate-180 transition" />
-                    </summary>
-                    <p className="text-sm text-ink-soft pb-5 leading-relaxed">Crafted with traceable fibers from family-run mills.</p>
-                  </details>
-                ))}
-              </div>
+              {(product.composition_care || product.shipping_returns) && (
+                <div className="mt-10 divide-y divide-hairline border-y border-hairline">
+                  {[
+                    { label: "Composition & Care", content: product.composition_care },
+                    { label: "Shipping & Returns", content: product.shipping_returns },
+                  ].map(({ label, content }) => content ? (
+                    <details key={label} className="group">
+                      <summary className="flex justify-between items-center py-5 cursor-pointer text-sm tracking-wide uppercase">
+                        {label}
+                        <ChevronDown className="w-4 h-4 group-open:rotate-180 transition" />
+                      </summary>
+                      <p className="text-sm text-ink-soft pb-5 leading-relaxed whitespace-pre-line">{content}</p>
+                    </details>
+                  ) : null)}
+                </div>
+              )}
             </div>
           </div>
         </div>

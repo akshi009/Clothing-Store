@@ -24,12 +24,16 @@ export type ProductRow = {
   price: number | string; stock: number;
   description?: string | null; image_url?: string | null;
   images?: string[];
+  composition_care?: string | null;
+  shipping_returns?: string | null;
   status: string; featured: boolean;
 };
 
 const empty: ProductRow = {
   name: "", slug: "", category: "Essentials", price: 0, stock: 0,
-  description: "", image_url: "", images: [], status: "active", featured: false,
+  description: "", image_url: "", images: [],
+  composition_care: "", shipping_returns: "",
+  status: "active", featured: false,
 };
 
 export function ProductForm({ product, onClose, onSaved }: { product: ProductRow | null; onClose: () => void; onSaved: () => void }) {
@@ -50,6 +54,8 @@ export function ProductForm({ product, onClose, onSaved }: { product: ProductRow
     // `images` column may not exist yet — only include it if there are values to avoid 400 on fresh DBs
     const payload: Record<string, any> = { ...parsed.data, description: parsed.data.description || null, image_url: parsed.data.image_url || null };
     if ((form.images ?? []).length > 0) payload.images = form.images;
+    if (form.composition_care !== undefined) payload.composition_care = form.composition_care || null;
+    if (form.shipping_returns !== undefined) payload.shipping_returns = form.shipping_returns || null;
     const { error } = form.id
       ? await supabase.from("products").update(payload as any).eq("id", form.id)
       : await supabase.from("products").insert(payload as any);
@@ -100,6 +106,24 @@ export function ProductForm({ product, onClose, onSaved }: { product: ProductRow
           </div>
           <Field label="Description" className="col-span-2">
             <textarea value={form.description ?? ""} onChange={(e) => set("description", e.target.value)} rows={4} className={`${inp} h-auto py-3`} />
+          </Field>
+          <Field label="Composition & Care" className="col-span-2">
+            <textarea
+              value={form.composition_care ?? ""}
+              onChange={(e) => set("composition_care", e.target.value)}
+              rows={3}
+              placeholder="e.g. 100% hand-woven cotton. Dry clean only. Do not bleach."
+              className={`${inp} h-auto py-3`}
+            />
+          </Field>
+          <Field label="Shipping & Returns" className="col-span-2">
+            <textarea
+              value={form.shipping_returns ?? ""}
+              onChange={(e) => set("shipping_returns", e.target.value)}
+              rows={3}
+              placeholder="e.g. Free shipping on orders above ₹5,000. Returns accepted within 7 days."
+              className={`${inp} h-auto py-3`}
+            />
           </Field>
           <div className="col-span-2 flex justify-end gap-3 pt-4 border-t border-hairline">
             <button type="button" onClick={onClose} className="btn-ghost">Cancel</button>

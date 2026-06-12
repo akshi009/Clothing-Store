@@ -16,6 +16,8 @@ export type StoreProduct = {
   status: string;
   featured: boolean;
   created_at: string;
+  composition_care?: string | null;
+  shipping_returns?: string | null;
 };
 
 export type SiteSettings = {
