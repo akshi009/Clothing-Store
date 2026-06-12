@@ -1,4 +1,14 @@
 {
   "buildCommand": "bun run build",
-  "framework": null
+  "framework": null,
+  "outputDirectory": "dist/client",
+  "functions": {
+    "api/[...path].js": {
+      "includeFiles": "dist/server/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/(.*)", "destination": "/api/[...path]" }
+  ]
 }
