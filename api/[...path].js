@@ -1,7 +1,6 @@
 // Vercel Node.js Serverless Function — converts Node req/res to WinterCG fetch and back
 import server from "../dist/server/server.js";
 
-export const config = { runtime: "nodejs20.x" };
 
 export default async function handler(req, res) {
   const protocol = req.headers["x-forwarded-proto"] || "https";
