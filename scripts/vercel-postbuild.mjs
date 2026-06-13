@@ -1,37 +1,35 @@
 /**
  * Creates the Vercel Build Output API v3 structure from the TanStack Start build.
  * Docs: https://vercel.com/docs/build-output-api/v3
- *
- * Output layout:
- *   .vercel/output/config.json          — routes config
- *   .vercel/output/static/              — static assets (from dist/client)
- *   .vercel/output/functions/index.func — Node.js SSR function
  */
 
-import { cpSync, mkdirSync, writeFileSync, readdirSync } from "fs";
-import { resolve, join } from "path";
+import { cpSync, mkdirSync, writeFileSync } from "fs";
+import { join } from "path";
 
 const root = process.cwd();
 const out = join(root, ".vercel/output");
 
 console.log("Building Vercel output...");
 
-// 1. Static assets
+// 1. Static assets — served automatically at /
 mkdirSync(join(out, "static"), { recursive: true });
 cpSync(join(root, "dist/client"), join(out, "static"), { recursive: true });
 console.log("✓ Copied dist/client → .vercel/output/static");
 
-// 2. SSR function
+// 2. SSR function directory
 const fnDir = join(out, "functions/index.func");
 mkdirSync(fnDir, { recursive: true });
 cpSync(join(root, "dist/server"), fnDir, { recursive: true });
 console.log("✓ Copied dist/server → .vercel/output/functions/index.func");
 
-// 3. Node.js launcher (bridges Node req/res ↔ WinterCG fetch)
+// 3. Mark as ES module so Node.js handles import/export correctly
+writeFileSync(join(fnDir, "package.json"), JSON.stringify({ type: "module" }, null, 2));
+console.log("✓ Created package.json (type: module)");
+
+// 4. Node.js launcher — bridges Node req/res ↔ WinterCG fetch
 writeFileSync(
   join(fnDir, "index.js"),
-  `
-import server from "./server.js";
+  `import server from "./server.js";
 
 export default async function handler(req, res) {
   const protocol = req.headers["x-forwarded-proto"] || "https";
@@ -71,11 +69,11 @@ export default async function handler(req, res) {
   }
   res.end();
 }
-`.trimStart()
+`
 );
 console.log("✓ Created index.js launcher");
 
-// 4. Function runtime config
+// 5. Function runtime config
 writeFileSync(
   join(fnDir, ".vc-config.json"),
   JSON.stringify(
@@ -91,17 +89,16 @@ writeFileSync(
 );
 console.log("✓ Created .vc-config.json");
 
-// 5. Vercel output config with routes
+// 6. Vercel output routes config
+// "handle": "filesystem" → serve static files first, then fall through to SSR
 writeFileSync(
   join(out, "config.json"),
   JSON.stringify(
     {
       version: 3,
       routes: [
-        // Static assets pass through
-        { src: "^/assets/(.*)$", dest: "/assets/$1" },
-        // Everything else → SSR function
-        { src: "^/(.*)$", dest: "/index" },
+        { handle: "filesystem" },
+        { src: "/(.*)", dest: "/index" },
       ],
     },
     null,
