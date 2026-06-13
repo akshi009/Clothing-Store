@@ -4,7 +4,9 @@
   "outputDirectory": "dist/client",
   "functions": {
     "api/[...path].js": {
-      "includeFiles": "dist/server/**"
+      "runtime": "nodejs20.x",
+      "includeFiles": "dist/server/**",
+      "maxDuration": 30
     }
   },
   "rewrites": [
