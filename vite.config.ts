@@ -13,4 +13,9 @@ export default defineConfig({
     tailwindcss(),
     tsConfigPaths(),
   ],
+  // Bundle ALL node_modules into the SSR output so the Vercel function
+  // is fully self-contained and doesn't need node_modules at runtime.
+  ssr: {
+    noExternal: true,
+  },
 });
