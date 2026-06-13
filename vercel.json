@@ -1,15 +1,4 @@
 {
-  "buildCommand": "bun run build",
-  "framework": null,
-  "outputDirectory": "dist/client",
-  "functions": {
-    "api/[...path].js": {
-      "includeFiles": "dist/server/**",
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    { "source": "/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/(.*)", "destination": "/api/[...path]" }
-  ]
+  "buildCommand": "bun run build && node scripts/vercel-postbuild.mjs",
+  "framework": null
 }
